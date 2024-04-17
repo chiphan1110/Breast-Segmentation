@@ -74,7 +74,6 @@ def train_one_epoch(model, device, trainloader, optimizer, criterion, meters, sc
         loss = criterion(preds, y)
         loss.backward()
         optimizer.zero_grad()
-
         with torch.no_grad():
             train_loss_meter.update(loss.item())
             preds_mask = preds.argmax(1).squeeze(1)
@@ -178,7 +177,7 @@ def main():
     model.init_weights()
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.paramters(), lr=args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
     train_model(args, model, device, train_loader, val_loader, optimizer, criterion, scheduler)
 

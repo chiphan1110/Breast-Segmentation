@@ -7,14 +7,6 @@ def create_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def initialize_train_log_file(metrics_file):
-    with open(metrics_file, 'w') as f:
-        f.write("epoch\ttrain_dice_loss\ttrain_iou\tval_dice_loss\tval_iou\n")
-
-def initialize_test_log_file(metrics_file):
-    with open(metrics_file, 'w') as f:
-        f.write("test_dice_loss\ttest_iou\n")
-
 def save_model(model, model_file):
     torch.save(model, model_file)
 

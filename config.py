@@ -8,7 +8,6 @@ CUDA_VISIBLE_DEVICES = "0"
 # Path
 ROOT = "/home/phanthc/Chi/Data/CsawS/"
 
-
 TRAIN_ROOT = os.path.join(ROOT, "train_data/")
 RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
 TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
@@ -61,14 +60,11 @@ TEST_TRANSFORM = A.Compose([
 ])
 
 # Dataset Params
-CLASSES = ["pectoral_muscle", "nipple"]
-SINGLE_LABEL = "nipple"
-NB_CLASSES = len(CLASSES)
 VAL_FRACTION = 0.2
 SEED = 42
 
 # Training Params
-N_EPOCHS = 100
+N_EPOCHS = 10
 BATCH_SIZE = 4
 LEARNING_RATE = 1e-4
 STEP_SIZE = 20
@@ -76,9 +72,6 @@ GAMMA = 0.5
 EARLY_STOPPING = 50
 WEIGHT_DECAY = 1e-6
 
-UNET_ENCODER = 'resnet34'
-UNET_ENCODER_WEIGHTS = 'imagenet'
-UNET_ACTIVATION = 'softmax2d' 
 
 
 

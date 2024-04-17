@@ -22,7 +22,7 @@ def get_model():
             drop_rate=0.0,
             attn_drop_rate=0.0,
             drop_path_rate=0.1,
-            init_cfg=dict(type="Pretrained", checkpoint="pretrained/mit_b4_mmseg.pth")
+            init_cfg=dict(type="Pretrained", checkpoint="/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth")
         ),
         decode_head=dict(
             type='SegformerHead',
