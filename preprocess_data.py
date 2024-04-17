@@ -126,7 +126,7 @@ def process_dataset(args, data_mode):
 
 def main():
     args = parse_args()
-    # process_dataset(args, "train")
+    process_dataset(args, "train")
     process_dataset(args, "test")
 
 if __name__ == "__main__":
