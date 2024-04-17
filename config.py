@@ -14,7 +14,8 @@ TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
 TRAIN_MASK = os.path.join(TRAIN_ROOT, "anonymized_dataset/")
 
 TEST_ROOT = os.path.join(ROOT, "test_data/")
-TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
+RAW_TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
+TEST_IMAGE= os.path.join(TEST_ROOT, "test_images/")
 TEST_MASK = os.path.join(TEST_ROOT, "annotator_1/")
 
 OUTPUT_DIR = os.path.join(ROOT, "output/")

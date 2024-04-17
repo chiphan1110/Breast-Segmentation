@@ -103,8 +103,15 @@ def preprocess_image(args, img):
     processed_img = clahe_img
     return processed_img
 
-def main():
-    args = parse_args()
+def process_dataset(args, data_mode):
+
+    if data_mode == "train":
+        args.raw_data_dir = RAW_TRAIN_IMAGE
+        args.processed_data_dir = TRAIN_IMAGE
+    elif data_mode == "test":
+        args.raw_data_dir = RAW_TEST_IMAGE
+        args.processed_data_dir = TEST_IMAGE
+
     create_dir(args.processed_data_dir)
     images = [img for img in os.listdir(args.raw_data_dir) if img.endswith('.png')]
     for img_name in tqdm(images, desc="Processing Images"):
@@ -115,7 +122,13 @@ def main():
         save_path = os.path.join(args.processed_data_dir, f"{img_name}.png")
         cv2.imwrite(save_path, processed_img)
     
-    print("Preprocessing done!")
+    print(f"Preprocessing {data_mode} set done!")
+
+def main():
+    args = parse_args()
+    # process_dataset(args, "train")
+    process_dataset(args, "test")
+
 if __name__ == "__main__":
     main()
     
