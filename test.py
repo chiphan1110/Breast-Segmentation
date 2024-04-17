@@ -10,16 +10,17 @@ from utils import *
 from config import *
 import argparse
 
-def argument_parser():
+def parse_args():
     parser = argparse.ArgumentParser(description='Testing a segmentation model')
     parser.add_argument('--init_model_file', default=BEST_MODEL_DIR, help='Path to the trained model file', dest='init_model_file')
-    parser.add_argument('--test_image_dir', default=TEST_IMAGE, help='Path to the test data file', dest='test_data_dir')
-    parser.add_argument('--test_mask_dir', default=TEST_MASK, help='Path to the test mask file', dest='mask_dir')
+    parser.add_argument('--test_image_dir', default=TEST_IMAGE, help='Path to the test data file', dest='test_image_dir')
+    parser.add_argument('--test_mask_dir', default=TEST_MASK, help='Path to the test mask file', dest='test_mask_dir')
     parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='input batch size for testing')
     parser.add_argument('--transform', type=A.Compose, default=TEST_TRANSFORM, help='Data augmentation')
     parser.add_argument('--pred_log_dir', type=str, default=PRED_DIR, help='File to save test predictions score', dest='pred_log_dir')
-    
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    return args
 
 def initialize_test_env(args):
     create_dir(args.pred_log_dir)
@@ -67,7 +68,7 @@ def test_model(model, test_loader, test_loss_meter, test_intersection_meter, tes
     return test_loss_avg, test_mIoU, test_mDice 
 
 def main():
-    args = argument_parser()
+    args = parse_args()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     test_log = initialize_test_env(args)
     initialize_test_log_file(test_log)
@@ -81,7 +82,7 @@ def main():
     test_target_meter = AverageMeter()
 
     print('Predicting on test data...')
-    test_loss_avg, test_mIoU, test_mDice  = test_model(model, test_loader, test_loss_meter, test_intersection_meter, test_union_meter, test_target_meter, device, criterion, test_log)
+    test_loss_avg, test_mIoU, test_mDice  = test_model(model, test_loader, test_loss_meter, test_intersection_meter, test_union_meter, test_target_meter, device, criterion)
     with open(test_log, 'a') as f:
         f.write(f"{test_loss_avg}\t{test_mIoU}\t{test_mDice}n")
 

@@ -22,7 +22,7 @@ MODEL_DIR = os.path.join(OUTPUT_DIR, "models/")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs/")
 PRED_DIR = os.path.join(OUTPUT_DIR, "predictions/")
 
-BEST_MODEL_DIR = ""
+BEST_MODEL_DIR = "/home/phanthc/Chi/Data/CsawS/output/models/model_10_2024_04_17-19_5242.pth"
 
 # Data Preprocessing 
 THRESHOLD = 0.1
