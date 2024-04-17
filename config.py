@@ -1,0 +1,84 @@
+import os
+import albumentations as A
+from albumentations.pytorch import ToTensorV2 
+
+# Hardware Configuration 
+CUDA_VISIBLE_DEVICES = "0"
+
+# Path
+ROOT = "/home/phanthc/Chi/Data/CsawS/"
+
+TRAIN_ROOT = os.path.join(ROOT, "train_data/")
+RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
+TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
+TRAIN_MASK = os.path.join(TRAIN_ROOT, "anonymized_dataset/")
+
+TEST_ROOT = os.path.join(ROOT, "test_data/")
+TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
+TEST_MASK = os.path.join(TEST_ROOT, "annotator_1/")
+
+OUTPUT_DIR = os.path.join(ROOT, "output/")
+MODEL_DIR = os.path.join(OUTPUT_DIR, "models/")
+LOG_DIR = os.path.join(OUTPUT_DIR, "logs/")
+PRED_DIR = os.path.join(OUTPUT_DIR, "predictions/")
+
+BEST_MODEL_DIR = ""
+
+# Data Preprocessing 
+THRESHOLD = 0.1
+MAXVAL = 1.0
+KERNEL_SIZE = 23
+OPERATION = "open"
+TOP_X = 1
+REVERSE = True
+CLIP = 2.0
+TILE = 8
+
+
+# Data Augmentation
+INPUT_SIZE = 512
+
+TRAIN_TRANSFORM = A.Compose([
+    A.Resize(INPUT_SIZE, INPUT_SIZE),
+    A.HorizontalFlip(p=0.5),
+    A.RandomBrightnessContrast(p=0.2),
+    A.Normalize(mean = (0.485), std = (0.229)),
+    A.ToRGB(),
+    ToTensorV2()
+])
+VAL_TRANSFORM = A.Compose([
+    A.Resize(INPUT_SIZE, INPUT_SIZE),
+    A.Normalize(mean = (0.485), std = (0.229)),
+    A.ToRGB(),
+    ToTensorV2()
+])
+TEST_TRANSFORM = A.Compose([
+    A.Resize(INPUT_SIZE, INPUT_SIZE),
+    A.Normalize(mean = (0.485), std = (0.229)),
+    A.ToRGB(),
+    ToTensorV2()
+])
+
+# Dataset Params
+CLASSES = ["pectoral_muscle", "nipple"]
+SINGLE_LABEL = "nipple"
+NB_CLASSES = len(CLASSES)
+VAL_FRACTION = 0.2
+SEED = 42
+
+# Training Params
+N_EPOCHS = 100
+BATCH_SIZE = 4
+LEARNING_RATE = 1e-4
+STEP_SIZE = 20
+GAMMA = 0.5
+EARLY_STOPPING = 50
+WEIGHT_DECAY = 1e-6
+
+UNET_ENCODER = 'resnet34'
+UNET_ENCODER_WEIGHTS = 'imagenet'
+UNET_ACTIVATION = 'softmax2d' 
+
+
+
+
