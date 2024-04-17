@@ -143,7 +143,7 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
     best_val_loss = float('inf')
     no_improvement_ep = 0
 
-    for epoch in range(1, args.n_epochs+1):
+    for epoch in range(1, args.epochs + 1):
         print(f"### Epoch {epoch} ###")
         train_loss, train_mIoU, train_mDice = train_one_epoch(model, device, trainloader, optimizer, criterion, train_meters, scheduler)
         val_loss, val_mIoU, val_mDice = validate(model, device, valloader, criterion, val_meters)
