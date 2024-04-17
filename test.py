@@ -1,11 +1,8 @@
 import os
-import csv
 import torch
-from torch.utils.data import DataLoader, TensorDataset
-from torchvision.transforms.functional import to_pil_image
-from torchvision import transforms
-import segmentation_models_pytorch as smp
-from segmentation_models_pytorch import utils
+from torch.utils.data import DataLoader
+import torch.nn as nn
+import torch.nn.functional as F
 from datetime import datetime
 import numpy as np
 from load_data import CSAWS
@@ -14,14 +11,12 @@ from config import *
 import argparse
 
 def argument_parser():
-    parser = argparse.ArgumentParser(description='Test a UNET model')
+    parser = argparse.ArgumentParser(description='Testing a segmentation model')
     parser.add_argument('--init_model_file', default=BEST_MODEL_DIR, help='Path to the trained model file', dest='init_model_file')
-    parser.add_argument('--test_data_dir', default=SAVE_TEST_PATH, help='Path to the test data file', dest='test_data_dir')
-    parser.add_argument('--label_list', type=list, default=CLASSES, help='List of labels', dest='label_list')
-    parser.add_argument('--single_label', type=str, default=SINGLE_LABEL, help="Single label")
-
+    parser.add_argument('--test_image_dir', default=TEST_IMAGE, help='Path to the test data file', dest='test_data_dir')
+    parser.add_argument('--test_mask_dir', default=TEST_MASK, help='Path to the test mask file', dest='mask_dir')
     parser.add_argument('--batch_size', type=int, default=BATCH_SIZE, help='input batch size for testing')
-    # parser.add_argument('--transform', type=transforms.Compose, default=TRANSFORM, help='Data augmentation')
+    parser.add_argument('--transform', type=A.Compose, default=TEST_TRANSFORM, help='Data augmentation')
     parser.add_argument('--pred_log_dir', type=str, default=PRED_DIR, help='File to save test predictions score', dest='pred_log_dir')
     
     return parser.parse_args()
@@ -32,69 +27,66 @@ def initialize_test_env(args):
     log_file = os.path.join(args.pred_log_dir, f"log_{current_time}.txt")
     return log_file
 
+def initialize_test_log_file(metrics_file):
+    with open(metrics_file, 'w') as f:
+        f.write("test_loss\ttest_IoU\ttest_dice\n")
+
 def load_test_dataset(args):
-    test_dataset = CSAWS(args.test_data_dir, args.label_list, args.single_label)
-    return test_dataset
+    test_dataset = CSAWS(args.test_image_dir, args.test_mask_dir, args.transform)
+    data_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
+    return data_loader
 
 def load_model(model_file, device):
     model = torch.load(model_file)
     return model
 
-def test_model(best_model, test_loader, loss, metrics, device, test_log):
-    test_epoch = smp.utils.train.ValidEpoch(
-        best_model, 
-        loss=loss, 
-        metrics=metrics, 
-        device=device,
-    )
-
-    test_logs = test_epoch.run(test_loader)
-    with open(test_log, 'a') as f:
-            f.write(f"{test_logs['dice_loss']:.4f}\t{test_logs['iou_score']:.4f}\n")
-    
-
-def visualize_pred(dataset, model, device, num_samples=5):
+def test_model(model, test_loader, test_loss_meter, test_intersection_meter, test_union_meter, test_target_meter, device, criterion):
     model.eval()
-    
-    for i in range(num_samples):
-        idx = np.random.randint(0, len(dataset))
-        image, gt_mask = dataset[idx]
+    predictions = []
 
-        if torch.is_tensor(image):
-            image = to_pil_image(image)
-        if torch.is_tensor(gt_mask):
-            gt_mask = to_pil_image(gt_mask)
+    with torch.no_grad():
+        for i, (images, masks) in enumerate(test_loader):
+            images = images.to(device).float()
+            masks = masks.to(device).long()
+            outputs = model(images)
+            outputs = F.interpolate(outputs, size=masks.shape[1:], mode='bilinear').squeeze(1)
+            loss = criterion(outputs, masks)
 
-        if dataset.transform is not None:
-            x_tensor = dataset.transform(image).unsqueeze(0).to(device)
-        else:
-            x_tensor = to_pil_image.to_tensor(image).unsqueeze(0).to(device)
-        
-        with torch.no_grad():
-            pr_mask = model(x_tensor)
-            pr_mask = pr_mask.squeeze().cpu()
-        
-        if torch.is_tensor(pr_mask):
-            pr_mask = to_pil_image(pr_mask)
-        
-        visualize(image, gt_mask, pr_mask)
+            predictions.append(outputs)
+            test_loss_meter.update(loss.item())
+            output_mask = outputs.argmax(1).squeeze(1)
+            intersection, union, target = intersectionAndUnionGPU(output_mask.float(), masks.float(), 3)
+            test_intersection_meter.update(intersection)
+            test_union_meter.update(union)
+            test_target_meter.update(target)
+
+    test_loss_avg = test_loss_meter.avg    
+    test_iou = test_intersection_meter.sum / (test_union_meter.sum + 1e-10)
+    test_dice = 2 * test_intersection_meter.sum / (test_target_meter.sum + test_union_meter.sum + 1e-10)
+    test_mIoU = torch.mean(test_iou)
+    test_mDice = torch.mean(test_dice)
+
+    return predictions, test_loss_avg, test_mIoU, test_mDice 
+
 
 def main():
     args = argument_parser()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     test_log = initialize_test_env(args)
     initialize_test_log_file(test_log)
-    test_dataset = load_test_dataset(args)
-    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
+    test_loader = load_test_dataset(args)
+    model = load_model(args.init_model_file, device)
+    criterion = nn.CrossEntropyLoss()
 
-    criterion = utils.losses.DiceLoss()
-    metrics = [utils.metrics.IoU(threshold=0.5),]
-    model = torch.load(args.init_model_file)
+    test_loss_meter = AverageMeter()
+    test_intersection_meter = AverageMeter()
+    test_union_meter = AverageMeter()
+    test_target_meter = AverageMeter()
 
     print('Predicting on test data...')
-    test_model(model, test_loader, criterion, metrics, device, test_log)
-
-    visualize_pred(test_dataset, model, device)
+    predictions, test_loss_avg, test_mIoU, test_mDice  = test_model(model, test_loader, test_loss_meter, test_intersection_meter, test_union_meter, test_target_meter, device, criterion, test_log)
+    with open(test_log, 'a') as f:
+        f.write(f"{test_loss_avg}\t{test_mIoU}\t{test_mDice}n")
 
 
 if __name__ == "__main__":
