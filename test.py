@@ -37,7 +37,7 @@ def load_test_dataset(args):
     data_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
     return data_loader
 
-def load_model(model_file, device):
+def load_model(model_file):
     model = torch.load(model_file)
     return model
 
@@ -73,7 +73,7 @@ def main():
     test_log = initialize_test_env(args)
     initialize_test_log_file(test_log)
     test_loader = load_test_dataset(args)
-    model = load_model(args.init_model_file, device)
+    model = load_model(args.init_model_file)
     criterion = nn.CrossEntropyLoss()
 
     test_loss_meter = AverageMeter()
@@ -85,6 +85,8 @@ def main():
     test_loss_avg, test_mIoU, test_mDice  = test_model(model, test_loader, test_loss_meter, test_intersection_meter, test_union_meter, test_target_meter, device, criterion)
     with open(test_log, 'a') as f:
         f.write(f"{test_loss_avg}\t{test_mIoU}\t{test_mDice}n")
+    print(f"Test Loss: {test_loss_avg}, Test mIoU: {test_mIoU}, Test mDice: {test_mDice}")
+    print("Testing complete!")
 
 if __name__ == "__main__":
     main()
