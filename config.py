@@ -8,6 +8,7 @@ CUDA_VISIBLE_DEVICES = "0"
 # Path
 ROOT = "/home/phanthc/Chi/Data/CsawS/"
 
+
 TRAIN_ROOT = os.path.join(ROOT, "train_data/")
 RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
 TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
