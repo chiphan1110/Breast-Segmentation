@@ -163,7 +163,7 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
         with open(log_file, 'a') as f:
             f.write(f"{epoch}\t{train_loss:.6f}\t{train_mIoU:.6f}\t{train_mDice:.6f}\t{val_loss:.6f}\t{val_mIoU:.6f}\t{val_mDice:.6f}\n")
     
-    if epoch % 10 == 0 or epoch == args.n_epochs:
+    if epoch % 10 == 0 or epoch == args.epochs:
         final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
         save_model(model, final_model_file)
         print("Training complete!")
