@@ -163,7 +163,7 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
         if no_improvement_ep > early_stopping:
             print(f"Early stopping at epoch {epoch}")
             final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
-            save_model(model, final_model_file)
+            torch.save(model, final_model_file)
             break
 
         print(f"Train Loss: {train_loss:.6f}, Train IoU: {train_mIoU:.6f}, Train Dice: {train_mDice:.6f}")
@@ -174,7 +174,7 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
     
         if epoch % 10 == 0 or epoch == args.epochs:
             final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
-            save_model(model, final_model_file)
+            torch.save(model, final_model_file)
     
     print("Training complete!")
 
