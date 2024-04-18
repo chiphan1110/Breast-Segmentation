@@ -95,7 +95,6 @@ def train_one_epoch(model, device, trainloader, optimizer, criterion, meters):
     train_mIoU = torch.mean(train_iou)
     train_mDice = torch.mean(train_dice)
     
-    # scheduler.step()
     return train_loss_meter.avg, train_mIoU, train_mDice
 
 def validate(model, device, valloader, criterion, meters):
@@ -130,7 +129,7 @@ def validate(model, device, valloader, criterion, meters):
     return val_loss_meter.avg, val_mIoU, val_mDice
 
 def train_model(args, model, device, trainloader, valloader, optimizer, criterion, ):
-    current_time = datetime.now().strftime("%Y_%m_%d-%H_%M%_S")
+    current_time = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
     log_file = initialize_training_env(args)
     initialize_train_log_file(log_file)
 
@@ -163,6 +162,8 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
         
         if no_improvement_ep > early_stopping:
             print(f"Early stopping at epoch {epoch}")
+            final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
+            save_model(model, final_model_file)
             break
 
         print(f"Train Loss: {train_loss:.6f}, Train IoU: {train_mIoU:.6f}, Train Dice: {train_mDice:.6f}")
@@ -188,7 +189,6 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
     train_model(args, model, device, train_loader, val_loader, optimizer, criterion)
 
 if __name__ == "__main__":
