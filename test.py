@@ -24,8 +24,8 @@ def parse_args():
 
 def initialize_test_env(args):
     create_dir(args.pred_log_dir)
-    current_time = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-    log_file = os.path.join(args.pred_log_dir, f"log_{current_time}.txt")
+    model_name = args.init_model_file.split('/')[-1].split('.')[0]
+    log_file = os.path.join(args.pred_log_dir, f"log_{model_name}.txt")
     return log_file
 
 def initialize_test_log_file(metrics_file):

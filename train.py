@@ -46,6 +46,12 @@ def initialize_train_log_file(metrics_file):
     with open(metrics_file, 'w') as f:
         f.write("epoch\ttrain_loss\ttrain_IoU\ttrain_Dice\tval_loss\tval_IoU\tval_Dice\n")
 
+def set_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
 def load_dataset(args):
     print("Loading dataset...")
 
@@ -57,7 +63,7 @@ def load_dataset(args):
 
     return train_loader, val_loader
 
-def train_one_epoch(model, device, trainloader, optimizer, criterion, meters, scheduler):
+def train_one_epoch(model, device, trainloader, optimizer, criterion, meters):
     model.train()
     train_loss_meter, intersection_meter, union_meter, target_meter = meters
     train_loss_meter.reset()
@@ -72,8 +78,10 @@ def train_one_epoch(model, device, trainloader, optimizer, criterion, meters, sc
         preds = model(x)
         preds = F.interpolate(preds, size=y.shape[1:], mode='bilinear')
         loss = criterion(preds, y)
-        loss.backward()
         optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
         with torch.no_grad():
             train_loss_meter.update(loss.item())
             preds_mask = preds.argmax(1).squeeze(1)
@@ -87,7 +95,6 @@ def train_one_epoch(model, device, trainloader, optimizer, criterion, meters, sc
     train_mIoU = torch.mean(train_iou)
     train_mDice = torch.mean(train_dice)
     
-    scheduler.step()
     return train_loss_meter.avg, train_mIoU, train_mDice
 
 def validate(model, device, valloader, criterion, meters):
@@ -121,8 +128,8 @@ def validate(model, device, valloader, criterion, meters):
 
     return val_loss_meter.avg, val_mIoU, val_mDice
 
-def train_model(args, model, device, trainloader, valloader, optimizer, criterion, scheduler):
-    current_time = datetime.now().strftime("%Y_%m_%d-%H_%M%_S")
+def train_model(args, model, device, trainloader, valloader, optimizer, criterion, ):
+    current_time = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
     log_file = initialize_training_env(args)
     initialize_train_log_file(log_file)
 
@@ -145,7 +152,7 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
 
     for epoch in range(1, args.epochs + 1):
         print(f"### Epoch {epoch} ###")
-        train_loss, train_mIoU, train_mDice = train_one_epoch(model, device, trainloader, optimizer, criterion, train_meters, scheduler)
+        train_loss, train_mIoU, train_mDice = train_one_epoch(model, device, trainloader, optimizer, criterion, train_meters)
         val_loss, val_mIoU, val_mDice = validate(model, device, valloader, criterion, val_meters)
         if val_loss < best_val_loss:
             best_val_loss = val_loss
@@ -155,6 +162,8 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
         
         if no_improvement_ep > early_stopping:
             print(f"Early stopping at epoch {epoch}")
+            final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
+            torch.save(model, final_model_file)
             break
 
         print(f"Train Loss: {train_loss:.6f}, Train IoU: {train_mIoU:.6f}, Train Dice: {train_mDice:.6f}")
@@ -163,13 +172,15 @@ def train_model(args, model, device, trainloader, valloader, optimizer, criterio
         with open(log_file, 'a') as f:
             f.write(f"{epoch}\t{train_loss:.6f}\t{train_mIoU:.6f}\t{train_mDice:.6f}\t{val_loss:.6f}\t{val_mIoU:.6f}\t{val_mDice:.6f}\n")
     
-    if epoch % 10 == 0 or epoch == args.epochs:
-        final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
-        save_model(model, final_model_file)
-        print("Training complete!")
+        if epoch % 10 == 0 or epoch == args.epochs:
+            final_model_file = os.path.join(args.model_dir, f"model_{epoch}_{current_time}.pth")
+            torch.save(model, final_model_file)
+    
+    print("Training complete!")
 
 def main():
     args = parse_args()
+    set_seed(args.seed)
     train_loader, val_loader = load_dataset(args)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -178,8 +189,7 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
-    train_model(args, model, device, train_loader, val_loader, optimizer, criterion, scheduler)
+    train_model(args, model, device, train_loader, val_loader, optimizer, criterion)
 
 if __name__ == "__main__":
     main()

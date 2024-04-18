@@ -22,8 +22,7 @@ OUTPUT_DIR = os.path.join(ROOT, "output/")
 MODEL_DIR = os.path.join(OUTPUT_DIR, "models/")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs/")
 PRED_DIR = os.path.join(OUTPUT_DIR, "predictions/")
-
-BEST_MODEL_DIR = "/home/phanthc/Chi/Data/CsawS/output/models/model_10_2024_04_17-19_5242.pth"
+BEST_MODEL_DIR = os.path.join(MODEL_DIR, "best_model.pth")
 
 # Data Preprocessing 
 THRESHOLD = 0.1
@@ -65,15 +64,11 @@ VAL_FRACTION = 0.2
 SEED = 42
 
 # Training Params
-N_EPOCHS = 10
-BATCH_SIZE = 4
+N_EPOCHS = 100
+BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
 STEP_SIZE = 20
 GAMMA = 0.5
-EARLY_STOPPING = 50
-WEIGHT_DECAY = 1e-6
-
-
-
+EARLY_STOPPING = 10
 
 
