@@ -8,10 +8,9 @@ CUDA_VISIBLE_DEVICES = "0"
 # Path
 ROOT = "/home/phanthc/Chi/Data/CsawS/"
 
-TRAIN_ROOT = os.path.join(ROOT, "train_data/")
-RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
-TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
-TRAIN_MASK = os.path.join(TRAIN_ROOT, "anonymized_dataset/")
+RAW_TRAIN_IMAGE= os.path.join(ROOT, "original_images/")
+TRAIN_IMAGE = os.path.join(ROOT, "train_images/")
+TRAIN_MASK = os.path.join(ROOT, "anonymized_dataset/")
 
 TEST_ROOT = os.path.join(ROOT, "test_data/")
 RAW_TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
@@ -29,7 +28,6 @@ RAW_INFER_IMAGE= os.path.join(TEST_ROOT, "inference/raw/")
 INFER_IMAGE= os.path.join(TEST_ROOT, "inference/preprocessed/")
 INFER_MASK_PRED = os.path.join(TEST_ROOT, "inference/", BEST_MODEL_NAME + "/")
 
-# "/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth"
 PRETRAINED_MODEL_PATH = "/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth"
 
 # Data Preprocessing 
