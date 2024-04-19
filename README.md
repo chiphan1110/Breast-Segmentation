@@ -21,8 +21,17 @@ pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1
 pip install openmim
 mim install mmsegmentation
 ```
+## Dataset structure
 
 ## Preprocesing data
+First, the input dataset is preprocessesed by performing the following steps:
+1. **Binarization**: Converts grayscale images to binary based on a threshold.
+2. **Morphological Operations**: Cleans up images using specified morphological operations and dilation.
+3. **Blob Selection**: Retains only the largest contiguous regions.
+4. **CLAHE**: Enhances contrast using Contrast Limited Adaptive Histogram Equalization.
+   
+
+
 
 
 
