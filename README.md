@@ -22,21 +22,22 @@ pip install openmim
 mim install mmsegmentation
 ```
 ## Dataset structure
+
 ```shell
+CsawS
 ├── anonymized_dataset
-│   ├── 000
+│   ├── 000 -> each folder contains original image and different masks for components
 │   ├── 001
-|   ├── ...
+│   ├── ...
 │   ├── 279
 │   └── 280
-├── original_images 
+├── original_images -> image used for training
 └── test_data
-    ├── annotator_1
-    ├── annotator_2
-    ├── annotator_3
-    ├── anonymized_dataset
-    ├── original_images
-    └── segmentation_maps
+    ├── annotator_1 -> annotations from expert 1
+    ├── annotator_2 -> annotations from expert 2
+    ├── annotator_3 -> annotations from expert 3
+    ├── anonymized_dataset -> don't need to care
+    └── original_images -> image used for testing
 
 ```
 ## Preprocesing data
