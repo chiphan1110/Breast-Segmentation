@@ -30,7 +30,7 @@ INFER_IMAGE= os.path.join(TEST_ROOT, "inference/preprocessed/")
 INFER_MASK_PRED = os.path.join(TEST_ROOT, "inference/", BEST_MODEL_NAME + "/")
 
 # "/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth"
-PRETRAINED_MODEL_PATH = os.path.join(ROOT, "pretrained_model.pth")
+PRETRAINED_MODEL_PATH = "/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth"
 
 # Data Preprocessing 
 THRESHOLD = 0.1
@@ -72,7 +72,7 @@ VAL_FRACTION = 0.2
 SEED = 42
 
 # Training 
-N_EPOCHS = 100
+N_EPOCHS = 5
 BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
 STEP_SIZE = 20

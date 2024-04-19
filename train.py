@@ -1,7 +1,8 @@
 import os
 from datetime import datetime
+import numpy as np
 import albumentations as A
-from sklearn.model_selection import train_test_split
+from torch.utils.data.sampler import SubsetRandomSampler
 
 import torch
 import torch.nn as nn
@@ -51,15 +52,22 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    np.random.seed(seed)
 
 def load_dataset(args):
     print("Loading dataset...")
-
     full_dataset = CSAWS(args.image_dir, args.mask_dir, args.transform)
-    train_dataset, val_dataset = train_test_split(full_dataset, test_size=args.val_fraction, random_state=args.seed)
-    
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
+    dataset_size = len(full_dataset)
+    indices = list(range(dataset_size))
+    split = int(np.floor(args.val_fraction * dataset_size))
+    np.random.shuffle(indices)
+
+    train_indices, val_indices = indices[split:], indices[:split]
+    train_sampler = SubsetRandomSampler(train_indices)
+    val_sampler = SubsetRandomSampler(val_indices)
+
+    train_loader = DataLoader(full_dataset, batch_size=args.batch_size, sampler=train_sampler)
+    val_loader = DataLoader(full_dataset, batch_size=args.batch_size, sampler=val_sampler)
 
     return train_loader, val_loader
 
