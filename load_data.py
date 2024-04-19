@@ -3,9 +3,6 @@ import numpy as np
 import cv2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms
-import albumentations as A
-from albumentations.pytorch import ToTensorV2 
 from config import *
 
 class CSAWS(Dataset):
@@ -53,23 +50,24 @@ class CSAWS(Dataset):
         return img, mask.argmax(dim=2).squeeze()
 
 
-class InferenceDataset(Dataset):
-    def __init__(self, image_dir, transform=None):
+class InferenceDataset(Dataset):  
+    
+    def __init__(self, img_dir, transform=None):
         super().__init__()
-        self.image_dir = image_dir
+        self.img_dir = img_dir
+        self.image_files = [f for f in os.listdir(img_dir) if f.endswith('.png')]
         self.transform = transform
-        self.images = os.listdir(image_dir)
 
     def __len__(self):
-        return len(self.images)
+        return len(os.listdir(self.img_dir))
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.image_dir, self.images[idx])
-        img = Image.open(img_name).convert("L")  
-        original_size = img.size
+        img_name = self.image_files[idx]
+        img = cv2.imread(os.path.join(self.img_dir, img_name), cv2.IMREAD_GRAYSCALE)
         if self.transform:
-            image = self.transform(image=img)
-        return image, original_size
+            transform = self.transform(image=img)
+            img = transform['image']
+        return img
 
 
 if __name__ == "__main__":
