@@ -13,7 +13,6 @@ RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
 TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
 TRAIN_MASK = os.path.join(TRAIN_ROOT, "anonymized_dataset/")
 
-# TEST_ROOT = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/test_data"
 TEST_ROOT = os.path.join(ROOT, "test_data/")
 RAW_TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
 TEST_IMAGE= os.path.join(TEST_ROOT, "test_images/")
