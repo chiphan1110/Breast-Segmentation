@@ -1,4 +1,4 @@
-name: segmentation
+name: mammo-segmentation
 channels:
   - conda-forge
 dependencies:
