@@ -73,7 +73,7 @@ CsawS
 ```
 ## Training
 ### Loading pretrained model:
-- For basic reproducing, just download the pretrained model weights from this link [Google Drive](https://drive.google.com/drive/folders/10Vd66VJpKvRhSyc1H1U5AZnYGztCXeMM?usp=sharing) and adjust the variable `PRETRAINED_MODEL_PATH` at `config.py` file.
+- For basic reproducing, just download the pretrained model weights from this link [Google Drive](https://drive.google.com/drive/folders/1ylb77WEtJX4Qr75u6fRs5uSi1VJ1IiH5?usp=drive_link) and adjust the variable `PRETRAINED_MODEL_PATH` at `config.py` file.
 - For exploring more pretrained models, follow these steps:
   - Download weights pretrained on ImageNet-1K used for Training given by [SegFormer repo](https://github.com/open-mmlab/mmsegmentation.git), or by accessing this link directly [[onedrive]](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/xieenze_connect_hku_hk/EvOn3l1WyM5JpnMQFSEO5b8B7vrHw9kDaJGII-3N9KNhrg?e=cpydzZ). 
   - Install MMSegmentation toolbox:
@@ -107,7 +107,7 @@ Update `RAW_INFER_IMAGE` in `config.py` to point to the directory containing new
 The predicted masked will be saved inside the data folder. 
 
 ## Model
-The current model has been trained for 30 epochs and achieves an Intersection over Union (IOU) score of 0.75 and a Dice Score of 0.78. Model weights, mask predictions, and logs for both training and testing are available for access on [Google Drive](https://drive.google.com/drive/folders/10Vd66VJpKvRhSyc1H1U5AZnYGztCXeMM?usp=sharing).
+The current model has been trained for 30 epochs and achieves an Intersection over Union (IOU) score of 0.75 and a Dice Score of 0.78. Model weights, mask predictions, and logs for both training and testing are available for access on [Google Drive](https://drive.google.com/drive/folders/1ylb77WEtJX4Qr75u6fRs5uSi1VJ1IiH5?usp=drive_link).
 
 
 
