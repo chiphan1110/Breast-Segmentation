@@ -1,4 +1,5 @@
 from mmseg.models import build_segmentor
+from config import PRETRAINED_MODEL_PATH
 
 def get_model():
     norm_cfg = dict(type='BN', requires_grad=True)
@@ -22,7 +23,7 @@ def get_model():
             drop_rate=0.0,
             attn_drop_rate=0.0,
             drop_path_rate=0.1,
-            init_cfg=dict(type="Pretrained", checkpoint="/home/phanthc/Chi/Code/pretrained/mit_b4_mmseg.pth")
+            init_cfg=dict(type="Pretrained", checkpoint=PRETRAINED_MODEL_PATH)
         ),
         decode_head=dict(
             type='SegformerHead',
