@@ -8,8 +8,6 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2 
 from config import *
 
-
-
 class CSAWS(Dataset):
     def __init__(self, img_dir, mask_dir, transform=None):
         super().__init__()
@@ -21,7 +19,7 @@ class CSAWS(Dataset):
     def __len__(self):
         return len(os.listdir(self.img_dir))
     
-    def __combined_mask(self, img_name):
+    def __combined_mask__(self, img_name):
         img_name = img_name.split('.')[0]
         mask_path = os.path.join(self.mask_dir, img_name.split('_')[0])
         mask_nipple_name = os.path.join(mask_path, img_name + "_nipple.png")
@@ -42,18 +40,26 @@ class CSAWS(Dataset):
         combined_mask[:, :, 2] = mask_pectoral_muscle
         combined_mask = combined_mask.astype(np.float32)
 
-        return combined_mask       
+        return combined_mask   
 
-    
+
+class InferenceDataset(Dataset):
+    def __init__(self, image_dir, transform=None):
+        super().__init__()
+        self.image_dir = image_dir
+        self.transform = transform
+        self.images = os.listdir(image_dir)
+
+    def __len__(self):
+        return len(self.images)
+
     def __getitem__(self, idx):
-        img_name = self.image_files[idx]
-        img = cv2.imread(os.path.join(self.img_dir, img_name), cv2.IMREAD_GRAYSCALE)
-        mask = self.__combined_mask(img_name)
+        img_name = os.path.join(self.image_dir, self.images[idx])
+        image = Image.open(img_name).convert("L")  
+        original_size = image.size
         if self.transform:
-            transformed = self.transform(image=img, mask=mask)
-            img = transformed['image']
-            mask = transformed['mask']
-        return img, mask.argmax(dim=2).squeeze()
+            image = self.transform(image)
+        return image, original_size
 
 
 if __name__ == "__main__":

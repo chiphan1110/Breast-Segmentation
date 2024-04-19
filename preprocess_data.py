@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Process image")
+    parser.add_argument("--data_mode", type=str, default="train", help="Data for preprocessing")
     parser.add_argument("--raw_data_dir", type=str, default=RAW_TRAIN_IMAGE, help="Path to the image")
     parser.add_argument("--processed_data_dir", type=str, default=TRAIN_IMAGE, help="Path to save the processed image")
     parser.add_argument("--threshold", type=int, default=THRESHOLD, help="Threshold value for binarisation")
@@ -103,14 +104,17 @@ def preprocess_image(args, img):
     processed_img = clahe_img
     return processed_img
 
-def process_dataset(args, data_mode):
-
-    if data_mode == "train":
+def process_dataset(args):
+    if args.data_mode == "train":
         args.raw_data_dir = RAW_TRAIN_IMAGE
         args.processed_data_dir = TRAIN_IMAGE
-    elif data_mode == "test":
+    elif args.data_mode == "test":
         args.raw_data_dir = RAW_TEST_IMAGE
         args.processed_data_dir = TEST_IMAGE
+    elif args.data_mode == "infer":
+        print(args.raw_data_dir)
+        args.raw_data_dir = RAW_INFER_IMAGE
+        args.processed_data_dir = INFER_IMAGE
 
     create_dir(args.processed_data_dir)
     images = [img for img in os.listdir(args.raw_data_dir) if img.endswith('.png')]
@@ -122,12 +126,11 @@ def process_dataset(args, data_mode):
         save_path = os.path.join(args.processed_data_dir, f"{img_name}.png")
         cv2.imwrite(save_path, processed_img)
     
-    print(f"Preprocessing {data_mode} set done!")
+    print(f"Preprocessing {args.data_mode} set done!")
 
 def main():
     args = parse_args()
-    # process_dataset(args, "train")
-    process_dataset(args, "test")
+    process_dataset(args)
 
 if __name__ == "__main__":
     main()
