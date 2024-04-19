@@ -96,7 +96,7 @@ python train.py
 Training outputs (logs and model weights) are saved in the `/output` directory inside CsawS folder.
 
 ## Testing
-Adjust BEST_MODEL_DIR in config.py to point to your best model for testing and run:
+Adjust `BEST_MODEL_DIR` in `config.py` to point to your best model for testing and run:
 ```shell
 python test.py
 ```
