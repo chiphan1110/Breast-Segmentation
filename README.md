@@ -22,7 +22,23 @@ pip install openmim
 mim install mmsegmentation
 ```
 ## Dataset structure
+```shell
+├── anonymized_dataset
+│   ├── 000
+│   ├── 001
+|   ├── ...
+│   ├── 279
+│   └── 280
+├── original_images 
+└── test_data
+    ├── annotator_1
+    ├── annotator_2
+    ├── annotator_3
+    ├── anonymized_dataset
+    ├── original_images
+    └── segmentation_maps
 
+```
 ## Preprocesing data
 First, the input dataset is preprocessesed by performing the following steps:
 1. **Binarization**: Converts grayscale images to binary based on a threshold.
