@@ -18,15 +18,15 @@ RAW_TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
 TEST_IMAGE= os.path.join(TEST_ROOT, "test_images/")
 TEST_MASK = os.path.join(TEST_ROOT, "annotator_1/")
 
-RAW_INFER_IMAGE= "D:/CHI/2_RESEARCH/Research/BreastCancer\Data/CsawS/test_data/original_images/"
-INFER_IMAGE= "D:/CHI/2_RESEARCH/Research/BreastCancer\Data/CsawS/test_data/infer_images/"
+RAW_INFER_IMAGE= os.path.join(TEST_ROOT, "inference/raw/")
+INFER_IMAGE= os.path.join(TEST_ROOT, "inference/preprocessed/")
 
 OUTPUT_DIR = os.path.join(ROOT, "output/")
 MODEL_DIR = os.path.join(OUTPUT_DIR, "models/")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs/")
 PRED_DIR = os.path.join(OUTPUT_DIR, "predictions/")
-# BEST_MODEL_DIR = os.path.join(MODEL_DIR, "best_model.pth")
-BEST_MODEL_DIR = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/best_model.pth"
+BEST_MODEL_DIR = os.path.join(MODEL_DIR, "best_model.pth")
+# BEST_MODEL_DIR = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/best_model.pth"
 
 # Data Preprocessing 
 THRESHOLD = 0.1

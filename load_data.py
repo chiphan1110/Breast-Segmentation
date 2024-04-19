@@ -41,6 +41,16 @@ class CSAWS(Dataset):
         combined_mask = combined_mask.astype(np.float32)
 
         return combined_mask   
+    
+    def __getitem__(self, idx):
+        img_name = self.image_files[idx]
+        img = cv2.imread(os.path.join(self.img_dir, img_name), cv2.IMREAD_GRAYSCALE)
+        mask = self.__combined_mask__(img_name)
+        if self.transform:
+            transformed = self.transform(image=img, mask=mask)
+            img = transformed['image']
+            mask = transformed['mask']
+        return img, mask.argmax(dim=2).squeeze()
 
 
 class InferenceDataset(Dataset):
@@ -55,10 +65,10 @@ class InferenceDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = os.path.join(self.image_dir, self.images[idx])
-        image = Image.open(img_name).convert("L")  
-        original_size = image.size
+        img = Image.open(img_name).convert("L")  
+        original_size = img.size
         if self.transform:
-            image = self.transform(image)
+            image = self.transform(img)
         return image, original_size
 
 
