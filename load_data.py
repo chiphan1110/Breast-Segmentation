@@ -68,7 +68,7 @@ class InferenceDataset(Dataset):
         img = Image.open(img_name).convert("L")  
         original_size = img.size
         if self.transform:
-            image = self.transform(img)
+            image = self.transform(image=img)
         return image, original_size
 
 

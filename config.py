@@ -13,10 +13,14 @@ RAW_TRAIN_IMAGE= os.path.join(TRAIN_ROOT, "original_images/")
 TRAIN_IMAGE = os.path.join(TRAIN_ROOT, "train_images/")
 TRAIN_MASK = os.path.join(TRAIN_ROOT, "anonymized_dataset/")
 
-TEST_ROOT = os.path.join(ROOT, "test_data/")
+TEST_ROOT = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/test_data"
+# TEST_ROOT = os.path.join(ROOT, "test_data/")
 RAW_TEST_IMAGE= os.path.join(TEST_ROOT, "original_images/")
 TEST_IMAGE= os.path.join(TEST_ROOT, "test_images/")
 TEST_MASK = os.path.join(TEST_ROOT, "annotator_1/")
+
+# RAW_INFER_IMAGE= os.path.join(TEST_ROOT, "inference/raw/")
+# INFER_IMAGE= os.path.join(TEST_ROOT, "inference/preprocessed/")
 
 RAW_INFER_IMAGE= os.path.join(TEST_ROOT, "inference/raw/")
 INFER_IMAGE= os.path.join(TEST_ROOT, "inference/preprocessed/")
@@ -25,8 +29,8 @@ OUTPUT_DIR = os.path.join(ROOT, "output/")
 MODEL_DIR = os.path.join(OUTPUT_DIR, "models/")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs/")
 PRED_DIR = os.path.join(OUTPUT_DIR, "predictions/")
-BEST_MODEL_DIR = os.path.join(MODEL_DIR, "best_model.pth")
-# BEST_MODEL_DIR = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/best_model.pth"
+# BEST_MODEL_DIR = os.path.join(MODEL_DIR, "best_model.pth")
+BEST_MODEL_DIR = "D:/CHI/2_RESEARCH/Research/BreastCancer/Data/CsawS/best_model.pth"
 
 # Data Preprocessing 
 THRESHOLD = 0.1
