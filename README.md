@@ -1,8 +1,8 @@
 ![Python 3.8](https://img.shields.io/badge/python-3.8-green.svg)
 # Mammogram segmentation 
 ## Description 
-
-
+Segmentation model to segment nipple and pectoral muscle in mammograms. 
+Model are trained on [CSAW-S Dataset](https://github.com/ChrisMats/CSAW-S) using [SegFormer](https://github.com/NVlabs/SegFormer). 
 ## Installation
 Use the environment configuration file to create a conda environment:
 
@@ -41,7 +41,7 @@ CsawS
     └── original_images 
 
 ```
-## Preprocesing data
+## Data Preprocessing
 First, adjust the dataset directory by changing the `ROOT` path at `config.py`. Adjust preprocessing params if needed. Then run:
 ```shell
 python preprocess_data.py # default is preprocessing train data
@@ -57,7 +57,7 @@ After preprocessing, the data directory will have structure like this:
 ```shell
 CsawS
 ├── anonymized_dataset
-│   ├── 000 -> each folder contains original image and different masks for components
+│   ├── 000 
 │   ├── 001
 │   ├── ...
 │   ├── 279
@@ -70,9 +70,9 @@ CsawS
 │   ├── anonymized_dataset 
 │   ├── original_images 
 │   └── test_images -> image used for testing
-└──train_images -> image used for testing
+└── train_images -> image used for testing
 ```
-## Training Model
+## Training
 ### Loading pretrained model:
 - For basic reproducing, just download the pretrained model weights from this link and adjust the variable `PRETRAINED_MODEL_PATH` at `config.py` file.
 - For exploring more pretrained models, follow these steps:
@@ -93,6 +93,41 @@ Run train code:
 ```shell
 python train.py
 ```
+After training, the training logs and model weights are saved to the `/output` folder in the data directory like this:
+```shell
+CsawS
+├── anonymized_dataset
+│   ├── 000 
+│   ├── 001
+│   ├── ...
+│   ├── 279
+│   └── 280
+├── original_images 
+├── output
+│   ├── logs -> train and validation log
+│   ├── models -> model 
+├── test_data
+│   ├── annotator_1 
+│   ├── annotator_2 
+│   ├── annotator_3 
+│   ├── anonymized_dataset 
+│   ├── original_images 
+│   └── test_images 
+└── train_images 
+```
+
+### Testing
+Adjust `BEST_MODEL_DIR` in `config.py` file according to path to model that is wanted to test on and run:
+```shell
+python test.py
+```
+The test log and prediction mask are saved at folder `output\predictions\{BEST_MODEL_NAME}\`
+
+### Inference on new images
+Adjust `RAW_INFER_IMAGE` in `config.py` file according to the folder that contain images that model will predict on. 
+Follow the code inside `visualization_test_infer`. 
+The predicted masked will be saved inside the data folder. 
+
 
 
 
