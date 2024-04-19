@@ -28,7 +28,7 @@ CsawS
 ├── anonymized_dataset
 │   ├── 000 -> each folder contains original image and different masks for components
 │   ├── 001
-|   ├── ...
+│   ├── ...
 │   ├── 279
 │   └── 280
 ├── original_images -> image used for training
