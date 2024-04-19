@@ -95,18 +95,18 @@ python train.py
 ```
 Training outputs (logs and model weights) are saved in the `/output` directory inside CsawS folder.
 
-### Testing
+## Testing
 Adjust BEST_MODEL_DIR in config.py to point to your best model for testing and run:
 ```shell
 python test.py
 ```
 Test results are stored in the `output/predictions/{BEST_MODEL_NAME}/` directory.
 
-### Inference on new images
+## Inference on new images
 Update `RAW_INFER_IMAGE` in `config.py` to point to the directory containing new images to predict on. Follow the code inside `visualization_test_infer.ipynb`. 
 The predicted masked will be saved inside the data folder. 
 
-### Model
+## Model
 The current model has been trained for 30 epochs and achieves an Intersection over Union (IOU) score of 0.75 and a Dice Score of 0.78. Model weights, mask predictions, and logs for both training and testing are available for access on [Google Drive](https://drive.google.com/drive/folders/10Vd66VJpKvRhSyc1H1U5AZnYGztCXeMM?usp=sharing).
 
 
